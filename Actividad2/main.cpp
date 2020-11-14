@@ -9,6 +9,8 @@ int main() {
 	TSTrie tsTrie;
 	tsTrie.startMeasures();
 	tsTrie.addFiles();
+	tsTrie.remove("abandoned");
+	tsTrie.find("abandoned");
 	tsTrie.endMeasures();
 
     std::cout << "\nTERNARY" << std::endl;

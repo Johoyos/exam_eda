@@ -12,6 +12,8 @@ class TSTrie
         Node* left = nullptr; 
         Node* right = nullptr;
         Node* middle = nullptr;
+        Node* parent = nullptr;
+        int parentPos = -1;
         bool isTerminal = true;
         vector<unsigned long> paths_pos;
         void show(int pos) {
@@ -55,6 +57,8 @@ class TSTrie
                     Node* terminal = new Node();
                     totalSize += sizeof(terminal);
                     node->middle = terminal;
+                    terminal->parent = node;
+                    terminal->parentPos = 1;
                     node = node->middle;
             } else if (node->value < name[i]) {
                 if (!node->right) {
@@ -62,10 +66,14 @@ class TSTrie
                     totalSize += sizeof(newNode);
                     newNode->value = name[i];
                     newNode->isTerminal = false;
+                    newNode->parentPos = 2;
                     node->right = newNode;
+                    newNode->parent = node;
                     Node* terminal = new Node();
+                    terminal->parent = node;
                     totalSize += sizeof(terminal);
                     newNode->middle = terminal;
+                    terminal->parentPos = 1;
                     node = newNode->middle;
                 } else {
                     node = node->right;
@@ -79,9 +87,13 @@ class TSTrie
                     newNode->value = name[i];
                     newNode->isTerminal = false;
                     node->left = newNode;
+                    newNode->parent = node;
+                    newNode->parentPos = 2;
                     Node* terminal = new Node();
+                    terminal->parent = node;
                     totalSize += sizeof(terminal);
                     newNode->middle = terminal;
+                    terminal->parentPos = 1;
                     node = newNode->middle;
                 } else {
                     node = node->left;
@@ -172,9 +184,79 @@ class TSTrie
         
     }
 
-    void remove() {
-        
-    }
+    void remove(string name, Node* node){
+		int size = (int) name.size();
+		for(int i = 0; i < size; i++) {
+            if (!node) {
+                cout << "File not  found\n";
+                return;
+            }
+            if (node->value == name[i]) {
+                node = node->middle;
+            } else if (node->value < name[i]) {
+                node = node->right;
+                i--;
+
+            } else if (node->value > name[i]) {
+                node = node->left;
+                i--;
+            }
+		}
+        vector<string> paths;
+        if (!node->isTerminal) cout << "File not found\n";
+		else {
+            node->isTerminal = false;
+
+            while (!node->isTerminal) {
+                int pos = node->parentPos;
+                node = node->parent;
+                if (pos == 1) {
+                    if(node->middle->left && node->middle->right) {
+                        if (!node->middle->left->right){
+                            node->middle->left->right = node->middle->right;
+                            node->middle = node->middle->left;
+                        }
+                        else {
+                            auto temp = node->middle->left->right;
+                            while (temp->right || temp->left){
+                                if (!temp->right){
+                                    temp = temp->left;
+                                }else {
+                                    temp = temp->right;
+                                }
+                                
+                            }
+                            temp->left = node->middle->left;
+                            temp->right = node->middle->right;
+                            node->middle = temp;
+                            int p = temp->parentPos;
+                            if (p == 0){
+                                temp->parent->left = nullptr;
+
+                            }else if(p ==2){
+                                temp->parent->right = nullptr;
+
+                            }
+                        }
+                        
+                    } else if (node->middle->left ){
+                        node->middle = node->middle->left;
+                    } else if (node->middle->right) {
+                        node->middle = node->middle->right;
+                    }
+                    node->middle = nullptr;
+                    
+                }else if (pos == 0) {
+                    node->left = nullptr;
+                }else if ( pos == 2) {
+                    node->right = nullptr;
+                }
+                
+            }
+
+        }
+	}
+
 
 public:
     TSTrie() {
@@ -203,7 +285,7 @@ public:
     }
 
     void remove(string name) {
-        remove(name, root, fileout);
+        remove(name, root);
 
     }
 
