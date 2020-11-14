@@ -10,6 +10,7 @@ Trie::Trie() {
 void Trie::insert(const std::string& word, int address) {
     auto node = root;
     for (char c : word) {
+        c = c - '0';
         if (node->children[c] == nullptr) {
             node->n_children++;
             auto tmp = new TrieNode();
@@ -18,44 +19,14 @@ void Trie::insert(const std::string& word, int address) {
         }
         node = node->children[c];
     }
-    node->address.push_back(address);
-}
-
-TrieNode* removeRec(TrieNode* node, std::string word, int index, int n_addr) {
-    if (node == nullptr)
-        return nullptr;
-    if (index == word.size()) {
-        if (n_addr == -1)
-            node->address.clear();
-        else if (n_addr < node->address.size()){
-            node->address.erase(node->address.begin() + n_addr);
-        }
-        if (node->n_children == 0 && node->address.empty())
-            return nullptr;
-        return node;
-    }
-    auto tmp = removeRec(node->children[word[index]], word, index+1, n_addr);
-    if (tmp == nullptr)
-        node->n_children--;
-    node->children[word[index]] = tmp;
-    if (node->address.empty() && node->n_children == 0)
-        return nullptr;
-    return node;
-}
-
-void Trie::remove(const std::string& word) {
-    removeRec(root, word, 0, -1);
-}
-
-void Trie::remove(const std::string& word, int n_addr) {
-    removeRec(root, word, 0, n_addr);
+    node->address = address;
 }
 
 void findChildren(TrieNode* node, std::vector<int>& addr) {
     if (node->n_children > 0) {
         for (auto &child : node->children) {
             if (child) {
-                addr.insert(addr.end(), child->address.begin(), child->address.end());
+                addr.emplace_back(node->address);
                 findChildren(child, addr);
             }
         }
@@ -70,7 +41,8 @@ std::vector<int> Trie::find(const std::string& word) {
         }
         node = node->children[c];
     }
-    std::vector<int> addr = node->address;
+    std::vector<int> addr;
+    addr.emplace_back(node->address);
     findChildren(node, addr);
     std::sort(addr.begin(), addr.end());
     return addr;
