@@ -4,7 +4,7 @@
 using namespace std;
 int main() {
     Trie trie;
-    auto paths = trie.find("12");
+    auto paths = trie.find("123");
 
     
     return 0;

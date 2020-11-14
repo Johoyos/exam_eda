@@ -10,7 +10,7 @@ struct Record{
 
 void insertRecords(){
 	std::ifstream infile("dataSet.txt");
-	system("rm data.db");
+	//system("rm data.db");
 	std::ofstream outfile("data.db", std::ios::binary | std::ios::app);
 	std::string line;
 	while (std::getline(infile, line)){
