@@ -4,8 +4,10 @@
 using namespace std;
 int main() {
     Trie trie;
-    auto paths = trie.find("123");
+std:string num;
+    cin>>num;
+    auto paths = trie.find(num);
 
-    
+
     return 0;
 }

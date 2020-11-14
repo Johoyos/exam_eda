@@ -48,8 +48,11 @@ std::vector<int> Trie::find(const std::string& word) {
         Record r;
         infile.seekg(pos, std::ios::beg);
         infile.read((char*)&r, sizeof(Record));
-        std::cout <<  r.key << std::endl;
-        std::cout <<  r.value << std::endl;
+	std::string key2 =r.key;
+	key2.resize(4);
+
+        std::cout <<  key2  ;
+        std::cout <<" " << r.value << std::endl;
     }
     return addr;
 }
@@ -68,5 +71,3 @@ Trie::Trie() {
 		}
 
 }
-
-
