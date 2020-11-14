@@ -43,10 +43,19 @@ std::vector<int> Trie::find(const std::string& word) {
     addr.emplace_back(node->address);
     findChildren(node, addr);
     std::sort(addr.begin(), addr.end());
+        std::ifstream infile("data.db");
+    for (auto pos : addr) {
+         Record r;
+        infile.seekg(pos);
+        infile.read((char*)&r, sizeof(Record));
+        cout <<  r.key << '\n';   
+        cout <<  r.value << '\n'; 
+    }
     return addr;
 }
 
 Trie::Trie() {
+    insertRecords();
     root = new TrieNode;
     std::ifstream infile("data.db");
 		Record r;
