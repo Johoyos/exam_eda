@@ -10,7 +10,6 @@ private:
 
 public:
     Trie();
-    explicit Trie(const std::string& filename);
 
     void insert(const std::string& word, int address);
     std::vector<int> find(const std::string& word);

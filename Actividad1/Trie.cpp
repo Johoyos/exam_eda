@@ -1,11 +1,9 @@
 #include "Trie.h"
-
+#include "record.h"
 #include <fstream>
 #include <algorithm>
+using namespace std;
 
-Trie::Trie() {
-    root = new TrieNode();
-}
 
 void Trie::insert(const std::string& word, int address) {
     auto node = root;
@@ -48,21 +46,16 @@ std::vector<int> Trie::find(const std::string& word) {
     return addr;
 }
 
-Trie::Trie(const std::string& filename) {
+Trie::Trie() {
     root = new TrieNode;
-    std::ifstream file(filename, std::ios::in);
-    int path = 0;
-    while (!file.eof()) {
-        std::string word;
-        file >> word;
-        size_t size = word.length()+1;
-        int pos;
-        while ((pos = word.find('/')) != std::string::npos) {
-            word.erase(0, pos + 1);
-        }
-        insert(word, path);
-        path += size;
-    }
+    std::ifstream infile("data.db");
+		Record r;
+		int pos = 0;
+		while (infile.read((char*)&r, sizeof(Record))){
+			std::string key = r.key;
+		    insert(key, pos);
+			pos = infile.tellg();
+		}
 
 }
 

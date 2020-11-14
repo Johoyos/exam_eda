@@ -1,16 +1,19 @@
 #include <iostream>
 #include <fstream>
 #include "Trie.h"
-
+#include "record.h"
+using namespace std;
 int main() {
-    Trie trie("data.txt");
-    auto paths = trie.find("ca");
-    std::ifstream file("data.txt");
+    insertRecords();
+    Trie trie;
+    auto paths = trie.find("12");
+    std::ifstream infile("data.db");
     for (auto pos : paths) {
-        file.seekg(pos);
-        std::string path;
-        file >> path;
-        std::cout << path << std::endl;
+         Record r;
+        infile.seekg(pos);
+        infile.read((char*)&r, sizeof(Record));
+        cout <<  r.key << '\n';   
+        cout <<  r.value << '\n'; 
     }
     
     return 0;
