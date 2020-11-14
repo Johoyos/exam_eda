@@ -4,8 +4,12 @@
 using namespace std;
 int main() {
     Trie trie;
-    auto paths = trie.find("12");
+std:string num;
+    cout << "Escriba una clave k para retornar su informacion ó sus digitos iniciales: ";
 
-    
+    cin>>num;
+    auto paths = trie.find(num);
+
+
     return 0;
 }
